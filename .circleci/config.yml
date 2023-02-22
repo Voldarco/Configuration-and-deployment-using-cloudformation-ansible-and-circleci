@@ -69,7 +69,7 @@ jobs:
             command: apk add --update ansible
         - run:
             name: Install ssh
-            command: sudo apt install openssh-client
+            command: apk add --no-cache openssh
         - run:
             name: Adding write permmision to know-host
             command: ssh-keyscan ~/inventory >> $HOME/.ssh/known_hosts
