@@ -18,9 +18,65 @@ jobs:
           name: "Say hello"
           command: "echo Hello, World!"
 
+  create_infrastructure:
+      docker:
+        - image: amazon/aws-cli
+      steps:
+        - checkout
+        - run:
+            name: Create Cloudformation Stack
+            command: |
+              aws cloudformation deploy \
+                --template-file template.yml \
+                --stack-name myStack-${CIRCLE_WORKFLOW_ID:0:5} \
+                --region us-east-1
+        - run:
+            name: Create inventory file
+            command: |
+              echo [all] > ~/Configuration-and-deployment-using-cloudformation-ansible-and-circleci/inventory
+        - run:
+            name: Move instance ip to inventory file
+            command: |
+              aws ec2 describe-instances \
+                --query 'Reservations[*].Instances[*].PublicIpAddress' \
+                --filters "Name=tag:Project,Values=udacity" \
+                --output text >> ~/Configuration-and-deployment-using-cloudformation-ansible-and-circleci/inventory
+        - persist_to_workspace:
+            root: ~/
+            paths:
+              - Configuration-and-deployment-using-cloudformation-ansible-and-circleci/inventory
+
+# Exercise: Config and Deployment
+  configure_infrastructure: 
+    docker:
+      - image: python:3.7-alpine3.11
+    steps:
+      - checkout
+      - add_ssh_keys:
+            # You can get this ID in the section where you registered the SSH Key
+              fingerprints: ["2a:cf:8d:97:15:42:15:aa:ed:c7:74:6c:c1:b0:ad:47"] 
+      - attach_workspace:
+          at: ~/
+      - run:
+          name: Install Ansible
+          command: |
+          # Install Ansible
+                    apk add --update ansible
+      - run:
+          name: Run Playbook and Configure server
+          command: |
+                    ansible-playbook -i inventory main.yml
+
+
 # Invoke jobs via workflows
 # See: https://circleci.com/docs/2.0/configuration-reference/#workflows
 workflows:
-  say-hello-workflow:
+  infrastructure_config_and_deploy:
     jobs:
       - say-hello
+      - create_infrastructure:
+          requires: 
+            - say-hello
+      -  configure_infrastructure:
+           requires:
+             - create_infrastructure
