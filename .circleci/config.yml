@@ -60,7 +60,7 @@ jobs:
             # You can get this ID in the section where you registered the SSH Key
               fingerprints: ["2a:cf:8d:97:15:42:15:aa:ed:c7:74:6c:c1:b0:ad:47"] 
       - attach_workspace:
-          at: ~/
+          at: ~/inventory
       - run:
           name: Install Ansible
           command: apk add --update ansible
