@@ -1,0 +1,7 @@
+After 2h:48 =min of trying to find a solution to using persist to workspace 
+on amazon/awscli, I came upon a code that works to install tar.
+
+      - run:
+          name: Install tar utility
+          command: |
+            yum install -y tar gzip 
