@@ -30,6 +30,10 @@ jobs:
                 --template-file template.yml \
                 --stack-name myStack-${CIRCLE_WORKFLOW_ID:0:5} \
                 --region us-east-1
+  create_inventory:
+      docker:
+        - image: amazon/aws-cli
+      steps:
         - run:
             name: Create inventory file
             command: |
@@ -52,21 +56,21 @@ jobs:
 
 # Exercise: Config and Deployment
   configure_infrastructure: 
-    docker:
-      - image: python:3.7-alpine3.11
-    steps:
-      - checkout
-      - add_ssh_keys:
+      docker:
+        - image: python:3.7-alpine3.11
+      steps:
+        - checkout
+        - add_ssh_keys:
             # You can get this ID in the section where you registered the SSH Key
-              fingerprints: ["2a:cf:8d:97:15:42:15:aa:ed:c7:74:6c:c1:b0:ad:47"] 
-      - attach_workspace:
-          at: ~/
-      - run:
-          name: Install Ansible
-          command: apk add --update ansible
-      - run:
-          name: Run Playbook and Configure server
-          command: ansible-playbook -i ~/inventory main.yml
+                fingerprints: ["2a:cf:8d:97:15:42:15:aa:ed:c7:74:6c:c1:b0:ad:47"] 
+        - attach_workspace:
+            at: ~/
+        - run:
+            name: Install Ansible
+            command: apk add --update ansible
+        - run:
+            name: Run Playbook and Configure server
+            command: ansible-playbook -i ~/inventory main.yml
 
 
 # Invoke jobs via workflows
@@ -74,10 +78,12 @@ jobs:
 workflows:
   infrastructure_config_and_deploy:
     jobs:
-      - say-hello
-      - create_infrastructure:
-          requires: 
-            - say-hello
+#      - say-hello
+      - create_infrastructure
+      - create_inventory:
+          requires:
+            - create_infrastructure
+
       -  configure_infrastructure:
            requires:
-             - create_infrastructure
+             - create_inventory
