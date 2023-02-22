@@ -71,8 +71,8 @@ jobs:
             name: Install ssh
             command: apk add --no-cache openssh
         - run:
-            name: Adding write permmision to know-host
-            command: ssh-keyscan ~/inventory >> $HOME/.ssh/known_hosts
+            name: Avoiding strict-host checking
+            command: ssh -o StrictHostKeyChecking=no user@remote-host 
         - run:
             name: Run Playbook and Configure server
             command: ansible-playbook -i ~/inventory main.yml
