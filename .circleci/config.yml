@@ -42,8 +42,9 @@ jobs:
                 --filters "Name=tag:Project,Values=udacity" \
                 --output text >> inventory
         - run:
-            name: install tar
-            command: sudo apt install tar
+            name: Install tar utility
+            command: |
+              yum install -y tar gzip
         - persist_to_workspace:
             root: ~/
             paths:
