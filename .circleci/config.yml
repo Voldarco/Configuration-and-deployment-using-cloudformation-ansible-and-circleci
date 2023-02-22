@@ -72,7 +72,7 @@ jobs:
             command: apk add --no-cache openssh
         - run:
             name: Avoiding strict-host checking
-            command: ssh -o StrictHostKeyChecking=no ubuntu 
+            command: ssh -o StrictHostKeyChecking=no "user@ubuntu" 
         - run:
             name: Run Playbook and Configure server
             command: ansible-playbook -i ~/inventory main.yml
