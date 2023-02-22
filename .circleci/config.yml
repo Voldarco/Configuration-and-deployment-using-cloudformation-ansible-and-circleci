@@ -41,9 +41,8 @@ jobs:
         - run:
             name: Move instance ip to inventory file
             command: |
-              aws ec2 describe-instances \
+              aws ec2 describe-instances --instance-ids $instance_id \
                 --query 'Reservations[*].Instances[*].PublicIpAddress' \
-                --filters "Name=tag:Project,Values=udacity" \
                 --output text >> ~/inventory
         - run:
             name: Install tar utility
