@@ -33,14 +33,14 @@ jobs:
         - run:
             name: Create inventory file
             command: |
-              echo [all] > ~/Configuration-and-deployment-using-cloudformation-ansible-and-circleci/inventory
+              echo [all] > inventory
         - run:
             name: Move instance ip to inventory file
             command: |
               aws ec2 describe-instances \
                 --query 'Reservations[*].Instances[*].PublicIpAddress' \
                 --filters "Name=tag:Project,Values=udacity" \
-                --output text >> ~/Configuration-and-deployment-using-cloudformation-ansible-and-circleci/inventory
+                --output text >> inventory
         - persist_to_workspace:
             root: ~/
             paths:
