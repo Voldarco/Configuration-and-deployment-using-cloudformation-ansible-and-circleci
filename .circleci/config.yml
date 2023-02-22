@@ -59,13 +59,10 @@ jobs:
           at: ~/
       - run:
           name: Install Ansible
-          command: |
-          # Install Ansible
-                    apk add --update ansible
+          command: apk add --update ansible
       - run:
           name: Run Playbook and Configure server
-          command: |
-                    ansible-playbook -i inventory main.yml
+          command: ansible-playbook -i inventory main.yml
 
 
 # Invoke jobs via workflows
