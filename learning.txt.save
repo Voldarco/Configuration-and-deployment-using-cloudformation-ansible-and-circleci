@@ -1,0 +1,6 @@
+In my attempt to use persist to workspace on amazon/aws-cli, i encountered 
+a lot of errors. Apparently it is not supported on the image as at 
+the time of this writing. 22/02/2023. I found a code that might fix the issue.
+  
+
+
